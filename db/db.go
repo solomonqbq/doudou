@@ -131,6 +131,10 @@ func GenModel() error {
 	return nil
 }
 
+func GenDao() {
+
+}
+
 func transType(db_type string) string {
 	switch strings.ToLower(db_type) {
 	case "varchar":
@@ -212,13 +216,23 @@ func WriteFile(desFile string, p_name string, all_table_meta map[string][]*Meta)
 			if m.Column_comment != commet {
 				commet = "\t//" + m.Column_comment
 			}
+			//			str = str + "\t" + FirstLetterToUpper(m.Column_name) + "\t" + transType(m.Data_type) + "\t`json:\"" + toCamelNaming(m.Column_name) + ",omitempty\"`" + commet + "\n"
 			str = str + "\t" + FirstLetterToUpper(m.Column_name) + "\t" + transType(m.Data_type) + commet + "\n"
 		}
-		str += "}\n"
+		str += "}\n\n\n"
 	}
 	fmt.Println(str)
 	err = ioutil.WriteFile(desFile, []byte(str), 0666)
 	return err
+}
+
+func toCamelNaming(name string) string {
+	strs := strings.Split(name, "_")
+	result := ""
+	for _, str := range strs {
+		result = result + FirstLetterToUpper(str)
+	}
+	return strings.ToUpper(result[0:1]) + result[1:]
 }
 
 func FirstLetterToUpper(str string) string {
